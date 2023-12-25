@@ -12,5 +12,6 @@ Snake* initSnake(void);
 void printSnake(Snake* s);
 int checkGameOver(Snake* s);
 void updateSnakePositions(Snake* s);
+void growSnake(Snake* s);
 void freeSnake(Snake* s);
 #endif
