@@ -81,7 +81,7 @@ int main(int argc, char* argv[]){
         attroff(COLOR_PAIR(1));
 
         refresh();
-        usleep(75000);
+        usleep(70000);
     }
     freeSnake(s);
     
