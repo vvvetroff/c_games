@@ -8,10 +8,9 @@ typedef struct Snake {
     int   headY;
 } Snake;
 
+WINDOW* startSnake(void);
 Snake* initSnake(void);
 void printSnake(Snake* s);
-int updateXdir(int pressed);
-int updateYdir(int pressed);
 int checkGameOver(Snake* s);
 void updateSnakePositions(Snake* s);
 void growSnake(Snake* s);

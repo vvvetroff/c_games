@@ -7,21 +7,23 @@
 #include <term.h>
 #include "snake.h"
 
+/* TODOs
+    - Start screen 
+    - Game over screen
+    - More apples at one time
+    - Snake "enlarging"
+    - Snake skins?
+    - Speed difficulty, or just difficulty in general
+    - Pause menu?
+
+*/
+
+
 int main(int argc, char* argv[]){
 
     /*------------------------------Setup---------------------------*/
     srand(time(NULL));
-    initscr();
-    refresh();
-    WINDOW* win = newwin(25, 80, 0, 0);
-    start_color();
-    init_pair(1, COLOR_WHITE, COLOR_RED);   
-    init_pair(2, COLOR_WHITE, COLOR_YELLOW); 
-    assume_default_colors(COLOR_GREEN, COLOR_GREEN); //changes the "default" terminal colors
-    wrefresh(win);
-    keypad(win, TRUE);
-    nodelay(win, TRUE); // makes getch NON-BLOCKING, I HATE YOU STACKOVERFLOW
-    curs_set(0);
+    WINDOW* win = startSnake();
 
     int dirX, dirY, appleX, appleY, pressed;
 
