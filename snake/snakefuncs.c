@@ -7,8 +7,6 @@
 #include "snake.h"
 
 WINDOW* startSnake(void){
-    initscr();
-    refresh();
     WINDOW* win = newwin(25, 80, 0, 0);
     start_color();
     init_pair(1, COLOR_WHITE, COLOR_RED);   
@@ -22,6 +20,7 @@ WINDOW* startSnake(void){
 }
 
 void snake(void){
+    srand(time(NULL));
     WINDOW* win = startSnake();
 
     int dirX, dirY, appleX, appleY, pressed;
@@ -55,37 +54,19 @@ void snake(void){
                 dirY = 0;
                 break;
         }
-
         s->headX += dirX;
         s->headY += dirY;
-
         gameover = checkGameOver(s);
-
         if(s->headX==appleX && s->headY==appleY){
             appleX = rand() % 80;
             appleY = rand() % 25;
-
             growSnake(s);
         }
-
         updateSnakePositions(s);
-
-        erase();
-
-        attron(COLOR_PAIR(2));
-        mvaddstr(appleY, appleX, "*");
-        attroff(COLOR_PAIR(2));
-
-        attron(COLOR_PAIR(1));
-        printSnake(s);
-        attroff(COLOR_PAIR(1));
-
-        refresh();
+        refreshTerminal(s, appleX, appleY);
         usleep(70000);
     }
     freeSnake(s);
-    
-    endwin();
 }
 
 Snake* initSnake(void){
@@ -98,6 +79,18 @@ Snake* initSnake(void){
     s->snake[0][0] = s->headY;
     s->snake[0][1] = s->headX;
     return s;
+}
+
+void refreshTerminal(Snake* s, int aX, int aY){
+    erase();
+    attron(COLOR_PAIR(2));
+    mvaddstr(aY, aX, "*");
+    attroff(COLOR_PAIR(2));
+
+    attron(COLOR_PAIR(1));
+    printSnake(s);
+    attroff(COLOR_PAIR(1));
+    refresh();
 }
 
 void printSnake(Snake* s){

@@ -16,9 +16,8 @@
 */
 
 int main(int argc, char* argv[]){
-
-    /*------------------------------Setup---------------------------*/
-    srand(time(NULL));
+    initscr();
     snake();
+    endwin();
     return 0;
 }
