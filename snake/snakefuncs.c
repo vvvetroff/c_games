@@ -6,6 +6,14 @@
 #include <term.h>
 #include "snake.h"
 
+void printLogo(void){
+    FILE* file = fopen("logo.txt", "r");
+    char str[256];
+    while(fgets(str, sizeof(str),file) != NULL)
+        printw("%s", str);
+    fclose(file);
+}
+
 WINDOW* startSnake(void){
     WINDOW* win = newwin(25, 80, 0, 0);
     start_color();
@@ -38,21 +46,13 @@ void snake(void){
         pressed = wgetch(win);
         switch(pressed){
             case KEY_UP: 
-                dirX = 0;
-                dirY = -1;
-                break;
+                dirX = 0;  dirY = -1; break;
             case KEY_DOWN: 
-                dirX = 0;
-                dirY = 1;
-                break;
+                dirX = 0;  dirY = 1;  break;
             case KEY_LEFT:
-                dirX = -1;
-                dirY = 0;
-                break;
+                dirX = -1; dirY = 0;  break;
             case KEY_RIGHT: 
-                dirX = 1;
-                dirY = 0;
-                break;
+                dirX = 1;  dirY = 0;  break;
         }
         s->headX += dirX;
         s->headY += dirY;
@@ -63,10 +63,11 @@ void snake(void){
             growSnake(s);
         }
         updateSnakePositions(s);
-        refreshTerminal(s, appleX, appleY);
+        refreshSnake(s, appleX, appleY);
         usleep(70000);
     }
     freeSnake(s);
+    nodelay(win, FALSE);
 }
 
 Snake* initSnake(void){
@@ -81,7 +82,7 @@ Snake* initSnake(void){
     return s;
 }
 
-void refreshTerminal(Snake* s, int aX, int aY){
+void refreshSnake(Snake* s, int aX, int aY){
     erase();
     attron(COLOR_PAIR(2));
     mvaddstr(aY, aX, "*");

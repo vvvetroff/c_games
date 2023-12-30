@@ -10,10 +10,11 @@ typedef struct Snake {
     int   headY;
 } Snake;
 
+void printLogo(void);
 WINDOW* startSnake(void);
 void snake(void);
 Snake* initSnake(void);
-void refreshTerminal(Snake* s, int aX, int aY);
+void refreshSnake(Snake* s, int aX, int aY);
 void printSnake(Snake* s);
 int checkGameOver(Snake* s);
 void updateSnakePositions(Snake* s);
