@@ -72,8 +72,8 @@ Snake* initSnake(void){
     s->headY    = 13;
     s->snake    = (Coords**)malloc(sizeof(Coords*));
     s->snake[0] = (Coords*)malloc(sizeof(Coords));
-    s->snake[0]->x = 5;
-    s->snake[0]->y = 13;
+    s->snake[0]->x = s->headX;
+    s->snake[0]->y = s->headY;
     return s;
 }
 
