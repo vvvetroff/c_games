@@ -30,20 +30,15 @@ WINDOW* startSnake(void){
 void snake(void){
     srand(time(NULL));
     WINDOW* win = startSnake();
-
-    int dirX, dirY, appleX, appleY, pressed;
-
     Snake* s = initSnake();
+    AppleList* a = initApples(8);
 
-    appleX = rand() % 80;
-    appleY = rand() % 25;
-
-    dirX = 1;
-    dirY = 0;
+    int dirX = 1;
+    int dirY = 0;
 
     int gameover = 0;
     while(!gameover){
-        pressed = wgetch(win);
+        int pressed = wgetch(win);
         switch(pressed){
             case KEY_UP: 
                 dirX = 0;  dirY = -1; break;
@@ -57,17 +52,17 @@ void snake(void){
         s->headX += dirX;
         s->headY += dirY;
         gameover = checkGameOver(s);
-        if(s->headX==appleX && s->headY==appleY){
-            appleX = rand() % 80;
-            appleY = rand() % 25;
-            growSnake(s);
-        }
+        checkIfEaten(s, a);
         updateSnakePositions(s);
-        refreshSnake(s, appleX, appleY);
+        refreshGame(s, a);
         usleep(70000);
     }
     freeSnake(s);
+    trashApples(a);
+    erase();
     nodelay(win, FALSE);
+    use_default_colors();
+    endwin();
 }
 
 Snake* initSnake(void){
@@ -82,19 +77,29 @@ Snake* initSnake(void){
     return s;
 }
 
-void refreshSnake(Snake* s, int aX, int aY){
-    erase();
-    attron(COLOR_PAIR(2));
-    mvaddstr(aY, aX, "*");
-    attroff(COLOR_PAIR(2));
+AppleList* initApples(int num){
+    AppleList* apples = (AppleList*)malloc(sizeof(AppleList));
+    apples->num = num;
+    apples->list = (Apple**)malloc(sizeof(Apple*) * num);
+    for(int i = 0; i < num; i++){
+        apples->list[i] = (Apple*)malloc(sizeof(Apple));
+        apples->list[i]->x = rand() % 80;
+        apples->list[i]->y = rand() % 25;
+    }
+    return apples;
+}
 
-    attron(COLOR_PAIR(1));
+void refreshGame(Snake* s, AppleList* a){
+    erase();
+
+    printApples(a);
     printSnake(s);
-    attroff(COLOR_PAIR(1));
+    
     refresh();
 }
 
 void printSnake(Snake* s){
+    attron(COLOR_PAIR(1));
     for(int snakePart = 0; snakePart < s->length; snakePart++){
         int partY = s->snake[snakePart][0];
         int partX = s->snake[snakePart][1];
@@ -103,6 +108,16 @@ void printSnake(Snake* s){
         else
             mvaddstr(partY, partX, "o"); 
     }
+    attroff(COLOR_PAIR(1));
+}
+
+void printApples(AppleList* a){
+    attron(COLOR_PAIR(2));
+    for(int apple = 0; apple < a->num; apple++){
+        Apple* cur = a->list[apple];
+        mvaddstr(cur->y, cur->x, "*"); 
+    }
+    attroff(COLOR_PAIR(2));
 }
 
 int checkGameOver(Snake* s){
@@ -117,6 +132,17 @@ int checkGameOver(Snake* s){
     if(s->headY > 24) result = 1;
 
     return result;
+}
+
+void checkIfEaten(Snake* s, AppleList* a){
+    for(int apple = 0; apple < a->num; apple++){
+        Apple* cur = a->list[apple];
+        if(s->headX == cur->x && s->headY == cur->y){
+            cur->x = rand() % 80;
+            cur->y = rand() % 25;
+            growSnake(s);
+        }
+    }
 }
 
 void updateSnakePositions(Snake* s){
@@ -144,4 +170,12 @@ void freeSnake(Snake* s){
     }
     free(s->snake);
     free(s);
+}
+
+void trashApples(AppleList* a){
+    for(int apple = 0; apple < a->num; apple++){
+        free(a->list[apple]);
+    }
+    free(a->list);
+    free(a);
 }
