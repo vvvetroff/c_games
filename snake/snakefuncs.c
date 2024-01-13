@@ -70,19 +70,19 @@ Snake* initSnake(void){
     s->length   = 1;
     s->headX    = 5;
     s->headY    = 13;
-    s->snake    = (int**)malloc(sizeof(int*));
-    s->snake[0] = (int*)malloc(2*sizeof(int));
-    s->snake[0][0] = s->headY;
-    s->snake[0][1] = s->headX;
+    s->snake    = (Coords**)malloc(sizeof(Coords*));
+    s->snake[0] = (Coords*)malloc(sizeof(Coords));
+    s->snake[0]->x = 5;
+    s->snake[0]->y = 13;
     return s;
 }
 
 AppleList* initApples(int num){
     AppleList* apples = (AppleList*)malloc(sizeof(AppleList));
     apples->num = num;
-    apples->list = (Apple**)malloc(sizeof(Apple*) * num);
+    apples->list = (Coords**)malloc(sizeof(Coords*) * num);
     for(int i = 0; i < num; i++){
-        apples->list[i] = (Apple*)malloc(sizeof(Apple));
+        apples->list[i] = (Coords*)malloc(sizeof(Coords));
         apples->list[i]->x = rand() % 80;
         apples->list[i]->y = rand() % 25;
     }
@@ -101,8 +101,8 @@ void refreshGame(Snake* s, AppleList* a){
 void printSnake(Snake* s){
     attron(COLOR_PAIR(1));
     for(int snakePart = 0; snakePart < s->length; snakePart++){
-        int partY = s->snake[snakePart][0];
-        int partX = s->snake[snakePart][1];
+        int partY = s->snake[snakePart]->y;
+        int partX = s->snake[snakePart]->x;
         if(snakePart==0) 
             mvaddstr(partY, partX, "@"); 
         else
@@ -114,8 +114,8 @@ void printSnake(Snake* s){
 void printApples(AppleList* a){
     attron(COLOR_PAIR(2));
     for(int apple = 0; apple < a->num; apple++){
-        Apple* cur = a->list[apple];
-        mvaddstr(cur->y, cur->x, "*"); 
+        Coords* curCoord = a->list[apple];
+        mvaddstr(curCoord->y, curCoord->x, "*"); 
     }
     attroff(COLOR_PAIR(2));
 }
@@ -123,7 +123,7 @@ void printApples(AppleList* a){
 int checkGameOver(Snake* s){
     int result = 0;
     for(int i = 1; i < s->length; i++)
-        if(s->headY==s->snake[i][0] && s->headX==s->snake[i][1])
+        if(s->headY==s->snake[i]->y && s->headX==s->snake[i]->x)
             result = 1;
 
     if(s->headX < 0)  result = 1;
@@ -136,10 +136,10 @@ int checkGameOver(Snake* s){
 
 void checkIfEaten(Snake* s, AppleList* a){
     for(int apple = 0; apple < a->num; apple++){
-        Apple* cur = a->list[apple];
-        if(s->headX == cur->x && s->headY == cur->y){
-            cur->x = rand() % 80;
-            cur->y = rand() % 25;
+        Coords* curCoords = a->list[apple];
+        if(s->headX == curCoords->x && s->headY == curCoords->y){
+            curCoords->x = rand() % 80;
+            curCoords->y = rand() % 25;
             growSnake(s);
         }
     }
@@ -149,10 +149,10 @@ void updateSnakePositions(Snake* s){
     int changeXto = s->headX, changeYto = s->headY;
 
     for(int snakePart = 0; snakePart < s->length; snakePart++){
-        int prevY = s->snake[snakePart][0];
-        int prevX = s->snake[snakePart][1]; 
-        s->snake[snakePart][0] = changeYto;
-        s->snake[snakePart][1] = changeXto;
+        int prevY = s->snake[snakePart]->y;
+        int prevX = s->snake[snakePart]->x; 
+        s->snake[snakePart]->y = changeYto;
+        s->snake[snakePart]->x = changeXto;
         changeYto = prevY;
         changeXto = prevX;
     }
@@ -160,8 +160,8 @@ void updateSnakePositions(Snake* s){
 
 void growSnake(Snake* s){
     s->length += 1;
-    s->snake = (int**)realloc(s->snake, (s->length)*sizeof(int*));
-    s->snake[(s->length)-1] = (int*)malloc(2*sizeof(int));
+    s->snake = (Coords**)realloc(s->snake, (s->length)*sizeof(Coords*));
+    s->snake[(s->length)-1] = (Coords*)malloc(sizeof(Coords));
 }
 
 void freeSnake(Snake* s){

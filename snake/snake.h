@@ -3,22 +3,22 @@
 
 #include <curses.h> // Bonnie and Clyde
 
-typedef struct Snake {
-    int** snake;
-    int  length;
-    int   headX;
-    int   headY;
-} Snake;
-
-typedef struct Apple {
+typedef struct Coords {
     int x;
     int y;
-} Apple;
+} Coords;
 
 typedef struct AppleList {
-    Apple** list;
+    Coords** list;
     int      num;
 } AppleList;
+
+typedef struct Snake {
+    Coords** snake;
+    int     length;
+    int      headX;
+    int      headY;
+} Snake;
 
 void snake(void);
 
