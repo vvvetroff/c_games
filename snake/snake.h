@@ -8,10 +8,10 @@ typedef struct Coords {
     int y;
 } Coords;
 
-typedef struct AppleList {
+typedef struct Apples {
     Coords** list;
     int      num;
-} AppleList;
+} Apples;
 
 typedef struct Snake {
     Coords** snake;
@@ -25,14 +25,14 @@ void snake(void);
 void printLogo(void);
 WINDOW* startSnake(void);
 Snake* initSnake(void);
-AppleList* initApples(int num);
-void refreshGame(Snake* s, AppleList* a);
+Apples* initApples(int num);
+void refreshGame(Snake* s, Apples* a);
 void printSnake(Snake* s);
-void printApples(AppleList* a);
+void printApples(Apples* a);
 int checkGameOver(Snake* s);
-void checkIfEaten(Snake* s, AppleList* a);
-void updateSnakePositions(Snake* s);
+void checkIfEaten(Snake* s, Apples* a);
+void moveSnake(Snake* s);
 void growSnake(Snake* s);
 void freeSnake(Snake* s);
-void trashApples(AppleList* a);
+void trashApples(Apples* a);
 #endif

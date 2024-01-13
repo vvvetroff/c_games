@@ -30,8 +30,8 @@ WINDOW* startSnake(void){
 void snake(void){
     srand(time(NULL));
     WINDOW* win = startSnake();
-    Snake* s = initSnake();
-    AppleList* a = initApples(8);
+    Snake* s    = initSnake();  
+    Apples* a   = initApples(8);
 
     int dirX = 1;
     int dirY = 0;
@@ -53,7 +53,7 @@ void snake(void){
         s->headY += dirY;
         gameover = checkGameOver(s);
         checkIfEaten(s, a);
-        updateSnakePositions(s);
+        moveSnake(s);
         refreshGame(s, a);
         usleep(70000);
     }
@@ -77,8 +77,8 @@ Snake* initSnake(void){
     return s;
 }
 
-AppleList* initApples(int num){
-    AppleList* apples = (AppleList*)malloc(sizeof(AppleList));
+Apples* initApples(int num){
+    Apples* apples = (Apples*)malloc(sizeof(Apples));
     apples->num = num;
     apples->list = (Coords**)malloc(sizeof(Coords*) * num);
     for(int i = 0; i < num; i++){
@@ -89,7 +89,7 @@ AppleList* initApples(int num){
     return apples;
 }
 
-void refreshGame(Snake* s, AppleList* a){
+void refreshGame(Snake* s, Apples* a){
     erase();
 
     printApples(a);
@@ -111,7 +111,7 @@ void printSnake(Snake* s){
     attroff(COLOR_PAIR(1));
 }
 
-void printApples(AppleList* a){
+void printApples(Apples* a){
     attron(COLOR_PAIR(2));
     for(int apple = 0; apple < a->num; apple++){
         Coords* curCoord = a->list[apple];
@@ -134,18 +134,18 @@ int checkGameOver(Snake* s){
     return result;
 }
 
-void checkIfEaten(Snake* s, AppleList* a){
+void checkIfEaten(Snake* s, Apples* a){
     for(int apple = 0; apple < a->num; apple++){
-        Coords* curCoords = a->list[apple];
-        if(s->headX == curCoords->x && s->headY == curCoords->y){
-            curCoords->x = rand() % 80;
-            curCoords->y = rand() % 25;
+        Coords* appCoords = a->list[apple];
+        if(s->headX == appCoords->x && s->headY == appCoords->y){
+            appCoords->x = rand() % 80;
+            appCoords->y = rand() % 25;
             growSnake(s);
         }
     }
 }
 
-void updateSnakePositions(Snake* s){
+void moveSnake(Snake* s){
     int changeXto = s->headX, changeYto = s->headY;
 
     for(int snakePart = 0; snakePart < s->length; snakePart++){
@@ -172,7 +172,7 @@ void freeSnake(Snake* s){
     free(s);
 }
 
-void trashApples(AppleList* a){
+void trashApples(Apples* a){
     for(int apple = 0; apple < a->num; apple++){
         free(a->list[apple]);
     }
