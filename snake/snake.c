@@ -18,14 +18,7 @@
 int main(int argc, char* argv[]){
     initscr();
     curs_set(0);
-    while(1){
-      WINDOW* startmenu = newwin(25,80,0,11);
-      printLogo();
-      mvprintw(12, 20, "by vvvetroff, Github: github.com/vvvetroff");
-      mvprintw(14, 25, "Press any key to continue");
-      getch();
-      snake();
-    }
+    snake();
     endwin();
     return 0;
 }
